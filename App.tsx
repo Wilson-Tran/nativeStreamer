@@ -6,8 +6,16 @@
  */
 
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Button} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
+type RootStackParamsList = {
+  Home: undefined;
+  Profile: {name: string};
+};
+
+const Stack = createNativeStackNavigator<RootStackParamsList>();
 // import {
 //   Colors,
 //   DebugInstructions,
@@ -92,8 +100,13 @@ const styles = StyleSheet.create({
     marginTop: 32,
     paddingHorizontal: 24,
   },
+  home: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: '600',
   },
   sectionDescription: {
@@ -106,16 +119,44 @@ const styles = StyleSheet.create({
   },
 });
 
+const HomeScreen = ({navigation}) => {
+  return (
+    <View style={styles.home}>
+      <Text style={styles.title}>Home Screen</Text>
+      <Button
+        title="Go to Details"
+        onPress={() => navigation.navigate('Details')}
+      />
+    </View>
+  );
+};
+
+const DetailsScreen = ({navigation}) => {
+  return (
+    <View style={styles.home}>
+      <Text style={styles.title}>Details Screen</Text>
+      <Button title="Go Back" onPress={() => navigation.goBack()} />
+      <Button
+        title="Go to More Details"
+        onPress={() => navigation.push('Details')}
+      />
+      <Button title="Go Home" onPress={() => navigation.popToTop()} />
+    </View>
+  );
+};
+
 const App = (): JSX.Element => {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Text style={styles.title}>Hello, world!</Text>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{title: 'Welcome'}}
+        />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 export default App;
